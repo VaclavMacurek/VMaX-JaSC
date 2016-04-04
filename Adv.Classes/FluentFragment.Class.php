@@ -5,6 +5,7 @@ namespace JaSC;
 use UniCAT\UniCAT;
 use UniCAT\ErrorOptions;
 use UniCAT\ClassScope;
+use UniCAT\MethodScope;
 
 /**
  * @package VMaX-3GeCoS
@@ -181,8 +182,22 @@ class FluentFragment
 			elseif(in_array($Method, array_keys($this -> Methods)) && !preg_match('/%s/', $this -> Methods[$Method][1]))
 			{
 				$RealMethod = $this -> Methods[$Method][0];
-				$this -> FluentFragment -> $RealMethod($this -> Methods[$Method][1]);
-				return $this;
+
+				if(empty($Parameters))
+				{
+					$this -> FluentFragment -> $RealMethod($this -> Methods[$Method][1]);
+					return $this;
+				}
+				elseif(count($Parameters) == 1)
+				{
+					$this -> FluentFragment -> $RealMethod($Parameters[0]);
+					return $this;
+				}
+				else
+				{
+					call_user_func_array(array($this -> FluentFragment, $RealMethod), $Parameters);
+					return $this;
+				}
 			}
 			else
 			{
@@ -239,6 +254,10 @@ class FluentFragment
 		 */
 		$this -> Methods['Set_Name'] = array('Set_Value', '%s');
 		$this -> Methods['Set_Value'] = array('Set_Value', '%s');
+		/*
+		 * this is mirror function for Set_ExportWay
+		 */
+		$this -> Methods['Set_ExportWay'] = array('Set_ExportWay', MethodScope::Get_ParameterDefaultValue('JaSC\CodeGenerator', 'Set_ExportWay'));
 
 		/*
 		 * prepares set of supported functions
@@ -247,7 +266,7 @@ class FluentFragment
 		{
 			foreach(ClassScope::Get_ConstantsNames($Interface) as $Constant)
 			{
-				$this -> Methods['Set_'.ucfirst(strtolower(explode('_', $Constant)[2]))] = array('Set_'. implode('', array_slice(str_split(explode('_', $Interface)[3]), 0, -1)), ClassScope::Get_ConstantValue($Interface, $Constant) );
+				$this -> Methods['Set_'.ucfirst(strtolower(explode('_', $Constant)[2]))] = array('Set_'.implode('', array_slice(str_split(explode('_', $Interface)[3]), 0, -1)), ClassScope::Get_ConstantValue($Interface, $Constant) );
 			}
 		}
 	}
