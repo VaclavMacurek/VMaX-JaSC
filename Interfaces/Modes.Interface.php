@@ -6,14 +6,15 @@ namespace JaSC;
  * @package VMaX-JaSC
  *
  * @author Václav Macůrek <VaclavMacurek@seznam.cz>
- * @copyright 2014 - 2016 Václav Macůrek
+ * @copyright 2014 - 2017 Václav Macůrek
  *
  * @license GNU LESSER GENERAL PUBLIC LICENSE version 3.0
  *
  * interface with modes for inserting of values
  */
-interface I_JaSC_Modes
+interface I_JaSC_InsertMode
 {
+
 	/**
 	 * values are inserted from right to left
 	 */
@@ -26,4 +27,5 @@ interface I_JaSC_Modes
 	 * values are not inserted
 	 */
 	const JASC_MODE_NOINS = 'NO_INSERT';
+
 }

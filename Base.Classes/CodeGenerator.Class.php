@@ -4,14 +4,13 @@ namespace JaSC;
 
 use UniCAT\CodeExport;
 use UniCAT\Comments;
-use UniCAT\UniCAT;
 use UniCAT\MethodScope;
 
 /**
  * @package VMaX-JaSC
  *
  * @author Václav Macůrek <VaclavMacurek@seznam.cz>
- * @copyright 2014 - 2016 Václav Macůrek
+ * @copyright 2014 - 2017 Václav Macůrek
  *
  * @license GNU LESSER GENERAL PUBLIC LICENSE version 3.0
  *
@@ -19,8 +18,9 @@ use UniCAT\MethodScope;
  */
 final class CodeGenerator
 {
-	use CodeExport, Comments;
-	
+	use CodeExport,
+	Comments;
+
 	/**
 	 * construction parts
 	 *
@@ -48,58 +48,119 @@ final class CodeGenerator
 	 *
 	 * @param string $InsertMode direction of code inserting
 	 *
-	 * @throws JaSC_Exception if insert mode was set by wrong option
+	 * @throws JaSC_Exception
 	 */
-	public function __construct($InsertMode=JaSC::JASC_MODE_NOINS)
+	public function __construct($InsertMode = Core::JASC_MODE_NOINS)
 	{
 		/*
-		 * initial setting of instance of class JaSC;
-		 * using of function __construct is also available
+		 * initial setting of instance of core classes of JaSC and UniCAT
 		 */
-		JaSC::Set_Instance();
+		Core::Set_Instance();
 
 		try
 		{
-			if(!in_array($InsertMode, JaSC::ShowOptions_Modes()))
+			if( !Core::Check_IsInsertMode($InsertMode) )
 			{
-				throw new JaSC_Exception(UniCAT::UNICAT_XCPT_MAIN_CLS, UniCAT::UNICAT_XCPT_MAIN_FNC, UniCAT::UNICAT_XCPT_MAIN_PRM, UniCAT::UNICAT_XCPT_SEC_PRM_DMDOPTION);
+				throw new JaSC_Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_DMDOPTION);
 			}
 			else
 			{
 				$this -> InsertMode = $InsertMode;
 			}
 		}
-		catch(JaSC_Exception $Exception)
+		catch( JaSC_Exception $Exception )
 		{
-			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), JaSC::ShowOptions_Modes() );
+			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), Core::ShowOptions_InsertMode());
 		}
-
 	}
-	
+
 	/**
-	 * sets operator as part of generated code
+	 * sets logic operator as part of generated code
 	 *
 	 * @param string $Operator pre-defined operator
 	 *
 	 * @throws JaSC_Exception if unsupported operator was set
 	 */
-	public function Set_Operator($Operator)
+	public function Set_LogicOperator($Operator)
 	{
 		try
 		{
-			if(!in_array($Operator, JaSC::ShowOptions_Operators()))
+			if( !Core::Check_IsLogicOperator($Operator) )
 			{
-				throw new JaSC_Exception(UniCAT::UNICAT_XCPT_MAIN_CLS, UniCAT::UNICAT_XCPT_MAIN_FNC, UniCAT::UNICAT_XCPT_MAIN_PRM, UniCAT::UNICAT_XCPT_SEC_PRM_DMDOPTION );
+				throw new JaSC_Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_DMDOPTION);
 			}
 			else
 			{
+				$Option = preg_split('/((?:^|[A-Z])[a-z]+)/', explode('_', __FUNCTION__)[1], NULL, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+				$Option = strtolower(implode('_', $Option));
+
 				$this -> Construction[] = $Operator;
-				$this -> UsedConstructions[] = strtolower(explode('_', __FUNCTION__)[1]);
+				$this -> UsedConstructions[] = $Option;
 			}
 		}
-		catch(JaSC_Exception $Exception)
+		catch( JaSC_Exception $Exception )
 		{
-			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), JaSC::ShowOptions_Operators() );
+			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), Core::ShowOptions_LogicOperator());
+		}
+	}
+
+	/**
+	 * sets setting operator as part of generated code
+	 *
+	 * @param string $Operator pre-defined operator
+	 *
+	 * @throws JaSC_Exception if unsupported operator was set
+	 */
+	public function Set_SettingOperator($Operator)
+	{
+		try
+		{
+			if( !Core::Check_IsSettingOperator($Operator) )
+			{
+				throw new JaSC_Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_DMDOPTION);
+			}
+			else
+			{
+				$Option = preg_split('/((?:^|[A-Z])[a-z]+)/', explode('_', __FUNCTION__)[1], NULL, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+				$Option = strtolower(implode('_', $Option));
+
+				$this -> Construction[] = $Operator;
+				$this -> UsedConstructions[] = $Option;
+			}
+		}
+		catch( JaSC_Exception $Exception )
+		{
+			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), Core::ShowOptions_SettingOperator());
+		}
+	}
+
+	/**
+	 * sets else operator as part of generated code
+	 *
+	 * @param string $Operator pre-defined operator
+	 *
+	 * @throws JaSC_Exception if unsupported operator was set
+	 */
+	public function Set_ElseOperator($Operator)
+	{
+		try
+		{
+			if( !Core::Check_IsElseOperator($Operator) )
+			{
+				throw new JaSC_Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_DMDOPTION);
+			}
+			else
+			{
+				$Option = preg_split('/((?:^|[A-Z])[a-z]+)/', explode('_', __FUNCTION__)[1], NULL, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+				$Option = strtolower(implode('_', $Option));
+
+				$this -> Construction[] = $Operator;
+				$this -> UsedConstructions[] = $Option;
+			}
+		}
+		catch( JaSC_Exception $Exception )
+		{
+			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), Core::ShowOptions_ElseOperator());
 		}
 	}
 
@@ -110,23 +171,56 @@ final class CodeGenerator
 	 *
 	 * @throws JaSC_Exception if unsupported separator was set
 	 */
-	public function Set_Separator($Separator=JaSC::JASC_OPTION_SPC)
+	public function Set_ValuesSeparator($Separator = Core::JASC_OPTION_SPC)
 	{
 		try
 		{
-			if(!in_array($Separator, JaSC::ShowOptions_Separators()))
+			if( !Core::Check_IsValuesSeparator($Separator) )
 			{
-				throw new JaSC_Exception(UniCAT::UNICAT_XCPT_MAIN_CLS, UniCAT::UNICAT_XCPT_MAIN_FNC, UniCAT::UNICAT_XCPT_MAIN_PRM, UniCAT::UNICAT_XCPT_SEC_PRM_DMDOPTION );
+				throw new JaSC_Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_DMDOPTION);
 			}
 			else
 			{
+				$Option = preg_split('/((?:^|[A-Z])[a-z]+)/', explode('_', __FUNCTION__)[1], NULL, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+				$Option = strtolower(implode('_', $Option));
+
 				$this -> Construction[] = $Separator;
-				$this -> UsedConstructions[] = strtolower(explode('_', __FUNCTION__)[1]);
+				$this -> UsedConstructions[] = $Option;
 			}
 		}
-		catch(JaSC_Exception $Exception)
+		catch( JaSC_Exception $Exception )
 		{
-			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), JaSC::ShowOptions_Separators() );
+			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), Core::ShowOptions_ValuesSeparator());
+		}
+	}
+
+	/**
+	 * sets line breaker as part of generated code
+	 *
+	 * @param string $Breaker pre-defined line-breaker
+	 *
+	 * @throws JaSC_Exception if unsupported line-breaker was set
+	 */
+	public function Set_LineBreaker($Breaker = Core::JASC_OPTION_NLN)
+	{
+		try
+		{
+			if( !Core::Check_IsLineBreaker($Breaker) )
+			{
+				throw new JaSC_Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_DMDOPTION);
+			}
+			else
+			{
+				$Option = preg_split('/((?:^|[A-Z])[a-z]+)/', explode('_', __FUNCTION__)[1], NULL, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+				$Option = strtolower(implode('_', $Option));
+
+				$this -> Construction[] = $Breaker;
+				$this -> UsedConstructions[] = $Option;
+			}
+		}
+		catch( JaSC_Exception $Exception )
+		{
+			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), Core::ShowOptions_ValuesSeparator());
 		}
 	}
 
@@ -137,50 +231,56 @@ final class CodeGenerator
 	 *
 	 * @throws JaSC_Exception if unsupported border was set
 	 */
-	public function Set_Border($Border)
+	public function Set_BlockBorder($Border)
 	{
 		try
 		{
-			if(!in_array($Border, JaSC::ShowOptions_Borders()))
+			if( !Core::Check_IsBlockBorder($Border) )
 			{
-				throw new JaSC_Exception(UniCAT::UNICAT_XCPT_MAIN_CLS, UniCAT::UNICAT_XCPT_MAIN_FNC, UniCAT::UNICAT_XCPT_MAIN_PRM, UniCAT::UNICAT_XCPT_SEC_PRM_DMDOPTION );
+				throw new JaSC_Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_DMDOPTION);
 			}
 			else
 			{
+				$Option = preg_split('/((?:^|[A-Z])[a-z]+)/', explode('_', __FUNCTION__)[1], NULL, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+				$Option = strtolower(implode('_', $Option));
+
 				$this -> Construction[] = $Border;
-				$this -> UsedConstructions[] = strtolower(explode('_', __FUNCTION__)[1]);
+				$this -> UsedConstructions[] = $Option;
 			}
 		}
-		catch(JaSC_Exception $Exception)
+		catch( JaSC_Exception $Exception )
 		{
-			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), JaSC::ShowOptions_Borders() );
+			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), Core::ShowOptions_BlockBorder());
 		}
 	}
 
 	/**
-	 * sets keyword (in, instanceof, new) as part of generated code
+	 * sets keyword (see options interfaces) as part of generated code
 	 *
 	 * @param string $Keyword pre-defined keyword
 	 *
 	 * @throws JaSC_Exception if unsupported keyword was set
 	 */
-	public function Set_Keyword($Keyword)
+	public function Set_ScriptKeyword($Keyword)
 	{
 		try
 		{
-			if(!in_array($Keyword, JaSC::ShowOptions_Keywords()))
+			if( !Core::Check_IsScriptKeyword($Keyword) )
 			{
-				throw new JaSC_Exception(UniCAT::UNICAT_XCPT_MAIN_CLS, UniCAT::UNICAT_XCPT_MAIN_FNC, UniCAT::UNICAT_XCPT_MAIN_PRM, UniCAT::UNICAT_XCPT_SEC_PRM_DMDOPTION );
+				throw new JaSC_Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_DMDOPTION);
 			}
 			else
 			{
+				$Option = preg_split('/((?:^|[A-Z])[a-z]+)/', explode('_', __FUNCTION__)[1], NULL, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+				$Option = strtolower(implode('_', $Option));
+
 				$this -> Construction[] = $Keyword;
-				$this -> UsedConstructions[] = strtolower(explode('_', __FUNCTION__)[1]);
+				$this -> UsedConstructions[] = $Option;
 			}
 		}
-		catch(JaSC_Exception $Exception)
+		catch( JaSC_Exception $Exception )
 		{
-			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), JaSC::ShowOptions_Keywords());
+			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), Core::ShowOptions_ScriptKeyword());
 		}
 	}
 
@@ -191,50 +291,26 @@ final class CodeGenerator
 	 *
 	 * @throws JaSC_Exception if unsupported keyword was set
 	 */
-	public function Set_Value($Value=NULL)
+	public function Set_Value($Value = NULL)
 	{
 		try
 		{
-			if($Value !== NULL && !in_array(gettype($Value), UniCAT::ShowOptions_Scalars()))
+			if( $Value !== NULL && !Core::Check_IsScalar($Value) )
 			{
-				throw new JaSC_Exception(UniCAT::UNICAT_XCPT_MAIN_CLS, UniCAT::UNICAT_XCPT_MAIN_FNC, UniCAT::UNICAT_XCPT_MAIN_PRM, UniCAT::UNICAT_XCPT_SEC_PRM_WRONGVALTYPE);
+				throw new JaSC_Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_WRONGVALTYPE);
 			}
 			else
 			{
-				$this -> Construction[] = $Value;
-				$this -> UsedConstructions[] = strtolower(explode('_', __FUNCTION__)[1]);
-			}
-		}
-		catch(JaSC_Exception $Exception)
-		{
-			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), gettype($Value), JaSC::ShowOptions_Scalars());
-		}
-	}
+				$Option = preg_split('/((?:^|[A-Z])[a-z]+)/', explode('_', __FUNCTION__)[1], NULL, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+				$Option = strtolower(implode('_', $Option));
 
-	/**
-	 * sets construction keyword (like for, case and so on) as part of generated code
-	 *
-	 * @param string $Construction pre-defined construction keyword
-	 *
-	 * @throws JaSC_Exception if unsupported keyword was set
-	 */
-	public function Set_Construction($Construction)
-	{
-		try
-		{
-			if(!in_array($Construction, JaSC::ShowOptions_Constructions()))
-			{
-				throw new JaSC_Exception(UniCAT::UNICAT_XCPT_MAIN_CLS, UniCAT::UNICAT_XCPT_MAIN_FNC, UniCAT::UNICAT_XCPT_MAIN_PRM, UniCAT::UNICAT_XCPT_SEC_PRM_DMDOPTION);
-			}
-			else
-			{
-				$this -> Construction[] = $Construction;
-				$this -> UsedConstructions[] = strtolower(explode('_', __FUNCTION__)[1]);
+				$this -> Construction[] = $Value;
+				$this -> UsedConstructions[] = $Option;
 			}
 		}
-		catch(JaSC_Exception $Exception)
+		catch( JaSC_Exception $Exception )
 		{
-			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), JaSC::ShowOptions_Constructions());
+			$Exception -> ExceptionWarning(__CLASS__, __FUNCTION__, MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), gettype($Value), Core::ShowOptions_Scalar());
 		}
 	}
 
@@ -251,28 +327,28 @@ final class CodeGenerator
 	{
 		try
 		{
-			if(method_exists($this, $Method))
+			if( method_exists($this, $Method) )
 			{
-				if(MethodScope::Check_IsPublic(__CLASS__, $Method))
+				if( MethodScope::Check_IsPublic(__CLASS__, $Method) )
 				{
-					call_user_func_array(array($this, $Method), $Parameters);
+					call_user_func_array(array( $this, $Method ), $Parameters);
 				}
 				else
 				{
-					throw new JaSC_Exception(UniCAT::UNICAT_XCPT_MAIN_CLS, UniCAT::UNICAT_XCPT_MAIN_FNC, UniCAT::UNICAT_XCPT_SEC_FNC_PRHBUSE1);
+					throw new JaSC_Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_SEC_FNC_PRHBUSE1);
 				}
 			}
 			else
 			{
-				throw new JaSC_Exception(UniCAT::UNICAT_XCPT_MAIN_CLS, UniCAT::UNICAT_XCPT_MAIN_FNC, UniCAT::UNICAT_XCPT_SEC_FNC_MISSING1);
+				throw new JaSC_Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_SEC_FNC_MISSING1);
 			}
 		}
-		catch(JaSC_Exception $Exception)
+		catch( JaSC_Exception $Exception )
 		{
 			$Exception -> ExceptionWarning(__CLASS__, $Method);
 		}
 	}
-	
+
 	/**
 	 * assembling of code
 	 *
@@ -280,19 +356,19 @@ final class CodeGenerator
 	 */
 	public function Execute()
 	{
-		switch($this -> InsertMode)
+		switch( $this -> InsertMode )
 		{
-			case JaSC::JASC_MODE_RTLINS:
-				for($Index = 0; $Index < count($this -> Construction); $Index++)
+			case Core::JASC_MODE_RTLINS:
+				for( $Index = 0; $Index < count($this -> Construction); $Index++ )
 				{
-					if(isset($this -> Construction[$Index+1]))
+					if( isset($this -> Construction[$Index + 1]) )
 					{
-						if($this -> UsedConstructions[$Index] == 'border' && $this -> UsedConstructions[$Index+1] == 'value')
+						if( $this -> UsedConstructions[$Index] == 'block_border' && $this -> UsedConstructions[$Index + 1] == 'value' )
 						{
-							$this -> LocalCode .= sprintf($this -> Construction[$Index], $this -> Construction[$Index+1]);
-							$this -> Construction[$Index+1] = FALSE;
+							$this -> LocalCode .= sprintf($this -> Construction[$Index], $this -> Construction[$Index + 1]);
+							$this -> Construction[$Index + 1] = FALSE;
 						}
-						elseif($this -> UsedConstructions[$Index] == 'border')
+						elseif( $this -> UsedConstructions[$Index] == 'block_border' )
 						{
 							$this -> LocalCode .= sprintf($this -> Construction[$Index], '');
 						}
@@ -303,7 +379,7 @@ final class CodeGenerator
 					}
 					else
 					{
-						if($this -> UsedConstructions[$Index] == 'border')
+						if( $this -> UsedConstructions[$Index] == 'block_border' )
 						{
 							$this -> LocalCode .= sprintf($this -> Construction[$Index], '');
 						}
@@ -314,17 +390,17 @@ final class CodeGenerator
 					}
 				}
 				break;
-			case JaSC::JASC_MODE_LTRINS:
-				for($Index = 0; $Index < count($this -> Construction); $Index++)
+			case Core::JASC_MODE_LTRINS:
+				for( $Index = 0; $Index < count($this -> Construction); $Index++ )
 				{
-					if(isset($this -> Construction[$Index+1]))
+					if( isset($this -> Construction[$Index + 1]) )
 					{
-						if($this -> UsedConstructions[$Index] == 'value' && $this -> UsedConstructions[$Index+1] == 'border')
+						if( $this -> UsedConstructions[$Index] == 'value' && $this -> UsedConstructions[$Index + 1] == 'block_border' )
 						{
-							$this -> LocalCode .= sprintf($this -> Construction[$Index+1], $this -> Construction[$Index]);
+							$this -> LocalCode .= sprintf($this -> Construction[$Index + 1], $this -> Construction[$Index]);
 							$this -> Construction[$Index] = FALSE;
 						}
-						elseif($this -> UsedConstructions[$Index] == 'border')
+						elseif( $this -> UsedConstructions[$Index] == 'block_border' )
 						{
 							$this -> LocalCode .= sprintf($this -> Construction[$Index], '');
 						}
@@ -335,7 +411,7 @@ final class CodeGenerator
 					}
 					else
 					{
-						if($this -> UsedConstructions[$Index] == 'border')
+						if( $this -> UsedConstructions[$Index] == 'block_border' )
 						{
 							$this -> LocalCode .= sprintf($this -> Construction[$Index], '');
 						}
@@ -347,9 +423,9 @@ final class CodeGenerator
 				}
 				break;
 			default:
-				for($Index = 0; $Index < count($this -> Construction); $Index++)
+				for( $Index = 0; $Index < count($this -> Construction); $Index++ )
 				{
-					if($this -> UsedConstructions[$Index] == 'border')
+					if( $this -> UsedConstructions[$Index] == 'block_border' )
 					{
 						$this -> LocalCode .= sprintf($this -> Construction[$Index], '');
 					}
@@ -365,10 +441,11 @@ final class CodeGenerator
 		 * sets way how code will be exported;
 		 * exports code
 		 */
-		JaSC::Set_ExportWay(static::$ExportWay);
-		JaSC::Add_Comments($this -> LocalCode, static::$Comments);
-		return JaSC::Convert_Code($this -> LocalCode, __CLASS__);
+		Core::Set_ExportWay(static::$ExportWay);
+		Core::Add_Comments($this -> LocalCode, static::$Comments);
+		return Core::Convert_Code($this -> LocalCode, __CLASS__);
 	}
+
 }
 
 ?>
