@@ -12,7 +12,7 @@ namespace JaSC;
  *
  * interface with logic operators
  */
-interface I_JaSC_Options_LogicOperator
+interface I_JaSC_LogicOperator
 {
 
 	const JASC_OPTION_EQUAL2 = "\x20==\x20";
@@ -31,7 +31,7 @@ interface I_JaSC_Options_LogicOperator
 /**
  * interface with setting operators
  */
-interface I_JaSC_Options_SettingOperator
+interface I_JaSC_SettingOperator
 {
 
 	const JASC_OPTION_PLUS1 = "\x20+\x20";
@@ -45,27 +45,15 @@ interface I_JaSC_Options_SettingOperator
 }
 
 /**
- * interface with else operators
- */
-interface I_JaSC_Options_ElseOperator
-{
-
-	const JASC_OPTION_SMCLN = ';';
-	const JASC_OPTION_CLN = "\x20:\x20";
-	const JASC_OPTION_AND1 = "&";
-
-}
-
-/**
  * interface with block borders
  */
-interface I_JaSC_Options_BlockBorder
+interface I_JaSC_BlockBorder
 {
 
 	const JASC_OPTION_CMNBRKTS = '(%s)';
 	const JASC_OPTION_SQRBRKTS = '[%s]';
 	const JASC_OPTION_BRCS = '{%s}';
-	const JASC_OPTION_SMPLQTŚ = "'%s'";
+	const JASC_OPTION_SMPLQTS = "'%s'";
 	const JASC_OPTION_DBLQTS = '"%s"';
 	const JASC_OPTION_SLSHS = '/%s/';
 
@@ -74,7 +62,7 @@ interface I_JaSC_Options_BlockBorder
 /**
  * interface with values separators
  */
-interface I_JaSC_Options_ValuesSeparator
+interface I_JaSC_ValuesSeparator
 {
 
 	const JASC_OPTION_CMM = ',';
@@ -85,11 +73,12 @@ interface I_JaSC_Options_ValuesSeparator
 }
 
 /**
- * interface with code-breakers (new-lines)
+ * interface with text formattera - new lines and so on
  */
-interface I_JaSC_Options_LineBreaker
+interface I_JaSC_TextFormatter
 {
 
+	const JASC_OPTION_TAB = "\t";
 	const JASC_OPTION_NLN = "\n";
 	const JASC_OPTION_NLT = "\n\t";
 
@@ -98,7 +87,7 @@ interface I_JaSC_Options_LineBreaker
 /**
  * interface with keywords (pre-defined words for inserting into code)
  */
-interface I_JaSC_Options_ScriptKeyword
+interface I_JaSC_ScriptKeyword
 {
 
 	const JASC_OPTION_FOR = 'for';
@@ -115,7 +104,7 @@ interface I_JaSC_Options_ScriptKeyword
 	const JASC_OPTION_TRY = 'try';
 	const JASC_OPTION_CATCH = 'catch';
 	const JASC_OPTION_FINALLY = 'finally';
-	const JASC_OPTION_FUNCTION = "function\x20";
+	const JASC_OPTION_FUNCTION = 'function';
 	const JASC_OPTION_INSTOF = "\x20instanceof\x20";
 	const JASC_OPTION_IN = "\x20in\x20";
 	const JASC_OPTION_NEW = "new\x20";
@@ -123,13 +112,68 @@ interface I_JaSC_Options_ScriptKeyword
 
 }
 
-interface I_JaSC_Options_Union extends I_JaSC_Options_BlockBorder,
- I_JaSC_Options_SettingOperator,
- I_JaSC_Options_LogicOperator,
- I_JaSC_Options_ElseOperator,
- I_JaSC_Options_ValuesSeparator,
- I_JaSC_Options_LineBreaker,
- I_JaSC_Options_ScriptKeyword
+/**
+ * interface with special/other characters
+ */
+interface I_JaSC_SpecialCharacter
+{
+
+	const JASC_OPTION_HASH = '#';
+	const JASC_OPTION_DLR = '$';
+	const JASC_OPTION_PLUS = '+';
+	const JASC_OPTION_SMCLN = ';';
+	const JASC_OPTION_CLN = ":";
+	const JASC_OPTION_AND1 = '&';
+
+}
+
+/**
+ * interface with modes for inserting of values
+ */
+interface I_JaSC_InsertMode
+{
+
+	/**
+	 * values are inserted from right to left
+	 */
+	const JASC_MODE_RTLINS = 'RIGHT_TO_LEFT_INSERT';
+	/**
+	 * values are inserted from left to right
+	 */
+	const JASC_MODE_LTRINS = 'LEFT_TO_RIGHT_INSERT';
+	/**
+	 * values are not inserted
+	 */
+	const JASC_MODE_NOINS = 'NO_INSERT';
+
+}
+
+interface I_JaSC_ValueMode
+{
+
+	const JASC_MODE_CSV = 'CSV';
+	const JASC_MODE_JSON = 'JSON';
+	const JASC_MODE_PRMS = 'PARAMETERS';
+	const JASC_MODE_CSVPRMS = 'CSV_PARAMETERS';
+
+}
+
+interface I_JaSC_ValueForm
+{
+
+	const JASC_MODE_VAR = 'VARIABLE';
+	const JASC_MODE_TEXT = 'TEXT';
+
+}
+
+interface I_JaSC_Union extends I_JaSC_BlockBorder,
+ I_JaSC_SettingOperator,
+ I_JaSC_LogicOperator,
+ I_JaSC_ElseOperator,
+ I_JaSC_ValuesSeparator,
+ I_JaSC_TextFormatter,
+ I_JaSC_ScriptKeyword,
+ I_JaSC_SpecialCharacter
 {
 	
 }

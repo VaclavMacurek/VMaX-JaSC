@@ -25,12 +25,17 @@ if( !defined('UNICAT_ADR') )
  */
 require_once JASC_ADR.'Interfaces/ConstructionTexts.Interface.php';
 require_once JASC_ADR.'Interfaces/Options.Interface.php';
-require_once JASC_ADR.'Interfaces/Modes.Interface.php';
+require_once JASC_ADR.'Interfaces/JqueryOptions.Interface.php';
+
+/*
+ * Traits
+ */
+require_once JASC_ADR.'Traits/Execute.Trait.php';
 
 /*
  * Exceptions
  */
-require_once JASC_ADR.'Exceptions/JaSC_Exception.Exception.php';
+require_once JASC_ADR.'Exceptions/Exception.Exception.php';
 
 /*
  * Base classes (Base.Classes);
@@ -45,5 +50,11 @@ require_once JASC_ADR.'Base.Classes/CodeGenerator.Class.php';
  */
 require_once JASC_ADR.'Adv.Classes/FluentFragment.Class.php';
 require_once JASC_ADR.'Adv.Classes/FragmentFiller.Class.php';
+require_once JASC_ADR.'Adv.Classes/ChainedFunctionsAssembler.Class.php';
+require_once JASC_ADR.'Adv.Classes/MixedValuesAssembler.Class.php';
+require_once JASC_ADR.'Adv.Classes/MultiValuesSerializer.Class.php';
+
+require_once JASC_ADR.'Adv.Classes/FFiller_Basic.Class.php';
+require_once JASC_ADR.'Adv.Classes/FFiller_jQuery.Class.php';
 
 ?>

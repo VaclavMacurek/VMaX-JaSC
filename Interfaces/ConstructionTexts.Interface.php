@@ -12,7 +12,7 @@ namespace JaSC;
  *
  * interface with construction text of comments
  */
-interface I_JaSC_Texts_Comments
+interface I_JaSC_Comments
 {
 
 	/**

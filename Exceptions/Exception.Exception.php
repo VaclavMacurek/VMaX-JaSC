@@ -2,7 +2,7 @@
 
 namespace JaSC;
 
-use UniCAT\UniCAT_Exception;
+use UniCAT\Exception as UniCAT_Exception;
 
 /**
  * @package VMaX-JaSC
@@ -14,8 +14,9 @@ use UniCAT\UniCAT_Exception;
  *
  * exception class
  */
-class JaSC_Exception extends UniCAT_Exception
+class Exception extends UniCAT_Exception
 {
+	
 }
 
 ?>
