@@ -152,7 +152,6 @@ interface I_JaSC_ValueMode
 {
 
 	const JASC_MODE_CSV = 'CSV';
-	const JASC_MODE_JSON = 'JSON';
 	const JASC_MODE_PRMS = 'PARAMETERS';
 	const JASC_MODE_CSVPRMS = 'CSV_PARAMETERS';
 

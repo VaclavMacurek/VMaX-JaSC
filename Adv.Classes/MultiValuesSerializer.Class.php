@@ -84,25 +84,27 @@ class MultiValuesSerializer
 			switch( $this -> Mode )
 			{
 				case Core::JASC_MODE_CSVPRMS:
-					if( !Core::Check_IsBasic($Value) )
+					if( !Core::Check_IsScalar($Value) )
+					{
+						throw new Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_WRONGVALTYPE);
+					}
+					elseif( Core::Check_IsArray($Value) && !Core::Check_IsScalar($Value[1]) )
 					{
 						throw new Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_WRONGVALTYPE);
 					}
 					break;
 				case Core::JASC_MODE_PRMS:
-					if( !Core::Check_IsArray($Value) )
+					if( Core::Check_IsArray($Value) && !Core::Check_IsScalar($Value[1]) )
+					{
+						throw new Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_WRONGVALTYPE);
+					}
+					elseif( !Core::Check_IsScalar($Value[1]) )
 					{
 						throw new Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_WRONGVALTYPE);
 					}
 					break;
 				case Core::JASC_MODE_CSV:
 					if( !Core::Check_IsScalar($Value) )
-					{
-						throw new Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_WRONGVALTYPE);
-					}
-					break;
-				case Core::JASC_MODE_JSON:
-					if( !Core::Check_IsArray($Value) )
 					{
 						throw new Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_MAIN_PRM, Core::UNICAT_XCPT_SEC_PRM_WRONGVALTYPE);
 					}
@@ -121,9 +123,6 @@ class MultiValuesSerializer
 					break;
 				case Core::JASC_MODE_CSV:
 					$Exception -> ExceptionWarning(get_called_class(), $Exception -> Get_CallerFunctionName(), MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), Core::ShowOptions_Scalar());
-					break;
-				case Core::JASC_MODE_JSON:
-					$Exception -> ExceptionWarning(get_called_class(), $Exception -> Get_CallerFunctionName(), MethodScope::Get_ParameterName(__CLASS__, __FUNCTION__), Core::ShowOptions_Array());
 					break;
 			}
 		}
@@ -181,16 +180,16 @@ class MultiValuesSerializer
 					}
 					else
 					{
-						$MultiValuesSerializer -> Set_ValuesSeparator(Core::JASC_OPTION_CMM);
-
 						if( Core::Check_IsArray($this -> Values[$Index]) && $this -> Forms[$Index] == Core::JASC_MODE_VAR )
 						{
+							$MultiValuesSerializer -> Set_ValuesSeparator(Core::JASC_OPTION_CMM);
 							$MultiValuesSerializer -> Set_Value($this -> Values[$Index][0]);
 							$MultiValuesSerializer -> Set_SettingOperator(Core::JASC_OPTION_EQUAL1);
 							$MultiValuesSerializer -> Set_Value($this -> Values[$Index][1]);
 						}
 						elseif( Core::Check_IsArray($this -> Values[$Index]) && $this -> Forms[$Index] == Core::JASC_MODE_TEXT )
 						{
+							$MultiValuesSerializer -> Set_ValuesSeparator(Core::JASC_OPTION_CMM);
 							$MultiValuesSerializer -> Set_Value($this -> Values[$Index][0]);
 							$MultiValuesSerializer -> Set_SettingOperator(Core::JASC_OPTION_EQUAL1);
 							$MultiValuesSerializer -> Set_BlockBorder(Core::JASC_OPTION_SMPLQTS);
@@ -198,6 +197,7 @@ class MultiValuesSerializer
 						}
 						else
 						{
+							$MultiValuesSerializer -> Set_ValuesSeparator(Core::JASC_OPTION_CMM);
 							$MultiValuesSerializer -> Set_Value($this -> Values[$Index]);
 						}
 					}
@@ -253,32 +253,17 @@ class MultiValuesSerializer
 					}
 					else
 					{
-						$MultiValuesSerializer -> Set_ValuesSeparator(Core::JASC_OPTION_CMM);
-
 						if( $this -> Forms[$Index] == Core::JASC_MODE_VAR )
 						{
+							$MultiValuesSerializer -> Set_ValuesSeparator(Core::JASC_OPTION_CMM);
 							$MultiValuesSerializer -> Set_Value($this -> Values[$Index]);
 						}
 						elseif( $this -> Forms[$Index] == Core::JASC_MODE_TEXT )
 						{
+							$MultiValuesSerializer -> Set_ValuesSeparator(Core::JASC_OPTION_CMM);
 							$MultiValuesSerializer -> Set_BlockBorder(Core::JASC_OPTION_SMPLQTS);
 							$MultiValuesSerializer -> Set_Value($this -> Values[$Index]);
 						}
-					}
-					break;
-				case Core::JASC_MODE_JSON:
-					if( $this -> Forms[$Index] == Core::JASC_MODE_VAR )
-					{
-						$MultiValuesSerializer -> Set_Value($this -> Values[$Index][0]);
-						$MultiValuesSerializer -> Set_ElseOperator(Core::JASC_OPTION_CLN);
-						$MultiValuesSerializer -> Set_Value($this -> Values[$Index][1]);
-					}
-					elseif( $this -> Forms[$Index] == Core::JASC_MODE_TEXT )
-					{
-						$MultiValuesSerializer -> Set_Value($this -> Values[$Index][0]);
-						$MultiValuesSerializer -> Set_ElseOperator(Core::JASC_OPTION_CLN);
-						$MultiValuesSerializer -> Set_BlockBorder(Core::JASC_OPTION_SMPLQTS);
-						$MultiValuesSerializer -> Set_Value($this -> Values[$Index][1]);
 					}
 					break;
 			}
