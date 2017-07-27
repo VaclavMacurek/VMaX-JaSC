@@ -34,14 +34,14 @@ final class FFiller_Basic extends FragmentFiller
 
 		try
 		{
-			if( count($this -> Insertions) < 4 )
+			if( count($this -> Insertions) < 3 )
 			{
 				throw new Exception(Core::UNICAT_XCPT_MAIN_CLS, Core::UNICAT_XCPT_MAIN_FNC, Core::UNICAT_XCPT_SEC_VAR_PRHBLWRARRSIZE);
 			}
 		}
 		catch( Exception $Exception )
 		{
-			$Exception -> ExceptionWarning(get_called_class(), __FUNCTION__, $Exception -> Get_VariableNameAsText($this -> Insertions), 5);
+			$Exception -> ExceptionWarning(get_called_class(), __FUNCTION__, $Exception -> Get_VariableNameAsText($this -> Insertions), 3);
 		}
 
 		try
@@ -76,9 +76,9 @@ final class FFiller_Basic extends FragmentFiller
 		$FFiller_Basic -> Set_Value($this -> Insertions[1]);
 		$FFiller_Basic -> Set_ElseOperator(Core::JASC_OPTION_SMCLN);
 		$FFiller_Basic -> Set_ValuesSeparator();
-		$FFiller_Basic -> Set_Value($this -> Insertions[2]);
+		$FFiller_Basic -> Set_Value($this -> Insertions[0]);
 		$FFiller_Basic -> Set_LogicOperator($Lasting);
-		$FFiller_Basic -> Set_Value($this -> Insertions[3]);
+		$FFiller_Basic -> Set_Value($this -> Insertions[2]);
 		$FFiller_Basic -> Set_ElseOperator(Core::JASC_OPTION_SMCLN);
 		$FFiller_Basic -> Set_ValuesSeparator();
 		$FFiller_Basic -> Set_Value($this -> Insertions[0]);

@@ -45,11 +45,16 @@ require_once JASC_ADR.'Base.Classes/Core.Class.php';
 require_once JASC_ADR.'Base.Classes/CodeGenerator.Class.php';
 
 /*
+ * Abstract classes (Abs.Classes);
+ * abstract and incomplete classes
+ */
+require_once JASC_ADR.'Abs.Classes/FragmentFiller.Class.php';
+
+/*
  * Advanced classes (Adv.Classes);
  * classes for creation of pre-defined (not only) simple code
  */
 require_once JASC_ADR.'Adv.Classes/FluentFragment.Class.php';
-require_once JASC_ADR.'Adv.Classes/FragmentFiller.Class.php';
 require_once JASC_ADR.'Adv.Classes/ChainedFunctionsAssembler.Class.php';
 require_once JASC_ADR.'Adv.Classes/MixedValuesAssembler.Class.php';
 require_once JASC_ADR.'Adv.Classes/MultiValuesSerializer.Class.php';
